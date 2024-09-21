@@ -1,8 +1,10 @@
 import { useState, useContext } from "react";
 import "./Login.css";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../Context/auth-context";
 
 export default function Login() {
+  const auth = useContext(AuthContext);
   const [entredValues, setEntredValues] = useState({
     email: "",
     password: "",
@@ -21,6 +23,7 @@ export default function Login() {
       email: "",
       password: "",
     });
+    auth.login();
   };
   return (
     <form onSubmit={authSubmitHandler}>

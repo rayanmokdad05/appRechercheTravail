@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 
 import "./TaskForm.css";
-import TASKS from "../data/tasks";
 
 export default function UpdateTask() {
   const taskId = useParams().taskId;

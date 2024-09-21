@@ -1,12 +1,36 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Users from "../Containers/Users";
-import UserTasks from "../Containers/UserTasks";
 import RootLayout from "../Containers/Roots";
 import ErrorPage from "../Containers/ErrorPage";
 import NewTask from "../Containers/NewTask";
 import Auth from "../Containers/Auth";
-import Subscribe from "../Containers/Subscribe";
 import UpdateTask from "../Containers/UpdateTask";
+import { useState, useCallback } from "react";
+import { AuthContext } from "../Context/auth-context";
+
+const routerLoginUser = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "", element: <NewTask /> },
+      { path: "/tasks/:taskId", element: <UpdateTask /> },
+    ],
+  },
+]);
+
+const routerLoginEnterprise = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { path: "", element: <NewTask /> },
+      { path: "/tasks/:taskId", element: <UpdateTask /> },
+      { path: "/auth", element: <Auth /> },
+    ],
+  },
+]);
 
 const router = createBrowserRouter([
   {
@@ -14,19 +38,30 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     children: [
-      { path: "", element: <Users /> },
-      { path: "users", element: <Users /> },
-      { path: ":userId/tasks", element: <UserTasks /> },
-      { path: "/tasks/new", element: <NewTask /> },
+      { path: "" },
       { path: "/tasks/:taskId", element: <UpdateTask /> },
       { path: "/auth", element: <Auth /> },
-      { path: "/subscribe", element: <Subscribe /> },
     ],
   },
 ]);
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const login = useCallback(() => {
+    setIsLoggedIn(true);
+  }, []);
+  const logout = useCallback(() => {
+    setIsLoggedIn(false);
+  }, []);
+
+  return (
+    <AuthContext.Provider
+      value={{ isLoggedIn: isLoggedIn, login: login, logout, logout }}
+    >
+      <RouterProvider router={router} />
+    </AuthContext.Provider>
+  );
 };
 
 export default App;

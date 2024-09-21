@@ -1,4 +1,3 @@
-import TASKS from "../data/tasks";
 import "./TaskForm.css";
 
 const NewTask = () => {
