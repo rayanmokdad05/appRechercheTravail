@@ -1,21 +1,38 @@
-import TASKS from "../data/tasks";
-import "./TaskForm.css";
+import { useContext } from 'react';
+import TASKS from '../data/tasks';
+import './TaskForm.css';
+import { AuthContext } from '../context/auth-context';
+import ModalMessageErreur from '../components/UIElements/ModalMessageErreur';
+import Spinner from '../components/UIElements/LoadingSpinner';
 
 const NewTask = () => {
-  function addTaskSubmitHandler(event) {
+  const auth = useContext(AuthContext);
+  async function addTaskSubmitHandler(event) {
     event.preventDefault();
+
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
 
     const newTask = {
-      id: "u1Test",
       title: data.title,
       description: data.description,
-      pictureUrl: data.pictureUrl,
-      creator: "u1",
+      dueDate: data.dueDate,
+      priority: '1',
+      assignee: 'u1',
     };
-    TASKS.push(newTask);
-    console.log(TASKS);
+    console.log(JSON.stringify(newTask));
+
+    await fetch(
+      'http://localhost:5000/api/tasks',
+      'POST',
+      JSON.stringify(newTask)
+    );
+
+    await fetch('http://localhost:5000/api/tasks', {
+      method: 'POST',
+      body: JSON.stringify(newTask),
+    });
+
     event.target.reset();
   }
 
@@ -40,8 +57,8 @@ const NewTask = () => {
       </div>
 
       <div className="control">
-        <label htmlFor="pictureUrl">Picture url</label>
-        <input id="pictureUrl" type="text" name="pictureUrl" />
+        <label htmlFor="dueDate">Date</label>
+        <input id="dueDate" type="text" name="dueDate" />
       </div>
 
       <p className="form-actions">
