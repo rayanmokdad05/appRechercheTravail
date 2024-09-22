@@ -4,7 +4,7 @@ import ErrorPage from "../Containers/ErrorPage";
 import NewTask from "../Containers/NewTask";
 import Auth from "../Containers/Auth";
 import UpdateTask from "../Containers/UpdateTask";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { AuthContext } from "../Context/auth-context";
 
 const routerLoginUser = createBrowserRouter([
@@ -46,7 +46,24 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const [data, setData] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        process.env.REACT_APP_BACKEND_URL + "travail/"
+      );
+      const jsonData = await response.json();
+      setData(jsonData);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
 
   const login = useCallback(() => {
     setIsLoggedIn(true);

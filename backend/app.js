@@ -6,9 +6,6 @@ const UtilisateurRouter = require("./Routes/user-route");
 const EntrepriseRouter = require("./Routes/Entreprise-route");
 const Travail = require("./Routes/travail-route");
 
-const MONGODB_URI =
-  "mongodb+srv://srihari:srihari123@jobproject.xk6ph.mongodb.net/?retryWrites=true&w=majority&appName=jobProject";
-
 //initialiser serveur
 const app = express();
 
@@ -17,9 +14,11 @@ app.use(express.json());
 // Utiliser le middleware CORS
 app.use(cors());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const MONGODB_URI =
-  process.env.MONGODB_URI || app.use("/api/EntrepriseRouter", EntrepriseRouter);
+  process.env.MONGODB_URI || "mongodb://localhost:27017/RechercheTravailProjet";
+
+app.use("/api/EntrepriseRouter", EntrepriseRouter);
 app.use("/api/utilisateur", UtilisateurRouter);
 app.use("/api/Travail", Travail);
 
