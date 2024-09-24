@@ -1,80 +1,131 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Signup.css";
-import { Link } from "react-router-dom";
-export default function Signup() {
-  const [passwordAreNotEqual, setPasswordAreNotEqual] = useState(false);
+import { USERS } from "../../data/utilisateurs";
 
-  function handleSubmit(event) {
+export default function Inscrire() {
+  const [prenom, setPrenom] = useState("");
+  const [courriel, setCourriel] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
+  const [typeUtilisateur, setTypeUtilisateur] = useState("Candidat");
+  const [emailError, setEmailError] = useState("");
+  const navigate = useNavigate();
+
+  const authSubmitHandler = (event) => {
     event.preventDefault();
-    const fd = new FormData(event.target);
-    const data = Object.fromEntries(fd.entries());
-    if (data.password !== data["confirm-password"]) {
-      setPasswordAreNotEqual(true);
+    if (!courriel.includes("@")) {
+      setEmailError("Le courriel doit contenir '@'");
       return;
     }
-    console.log(data);
-    event.target.reset();
-  }
+    setEmailError("");
+
+    const newUser = {
+      id_utilisateur: USERS.length + 1,
+      prenom: prenom,
+      email: courriel,
+      mot_de_passe: motDePasse,
+      type: typeUtilisateur,
+    };
+
+    USERS.push(newUser);
+    alert("Compte créé avec succès !");
+    navigate("/login");
+  };
+
+  const handleCourrielChange = (event) => {
+    const { value } = event.target;
+    setCourriel(value);
+    if (!value.includes("@")) {
+      setEmailError("Le courriel doit contenir '@'");
+    } else {
+      setEmailError("");
+    }
+  };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Welcome on board!</h2>
-      <p>We just need a little bit of data from you to get you started 🚀</p>
-
-      <div className="control">
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" required />
-      </div>
-
-      <div className="control-row">
-        <div className="control">
-          <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" />
-        </div>
-        <div className="control">
-          <label htmlFor="confirm-password">Confirm Password</label>
-          <input
-            id="confirm-password"
-            type="password"
-            name="confirm-password"
-          />
-          {passwordAreNotEqual ? (
-            <div className="control-error">
-              <p>Passwords must match.</p>
+    <div className="container">
+      <div className="screen">
+        <div className="screen__content signup">
+          <form onSubmit={authSubmitHandler} className="login">
+            <h2>Page d'inscription</h2>
+            <div className="control-row">
+              <label htmlFor="Prenom">Prenom</label>
+              <input
+                type="text"
+                id="Prenom"
+                name="Prenom"
+                value={prenom}
+                onChange={(e) => setPrenom(e.target.value)}
+                required
+              />
             </div>
-          ) : null}
+            <div className="control-row">
+              <label htmlFor="courriel">Courriel</label>
+              <input
+                id="courriel"
+                type="text"
+                name="courriel"
+                value={courriel}
+                onChange={handleCourrielChange}
+                required
+              />
+              {emailError && <p className="error">{emailError}</p>}
+            </div>
+            <div className="control-row">
+              <label htmlFor="MotDePasse">Mot de passe</label>
+              <input
+                id="MotDePasse"
+                type="password"
+                name="MotDePasse"
+                value={motDePasse}
+                onChange={(e) => setMotDePasse(e.target.value)}
+                required
+              />
+            </div>
+            <div className="control-row">
+              <label>Type d'utilisateur</label>
+              <div className="control">
+                <input
+                  type="radio"
+                  id="Candidat"
+                  name="typeUtilisateur"
+                  value="Candidat"
+                  checked={typeUtilisateur === "Candidat"}
+                  onChange={(e) => setTypeUtilisateur(e.target.value)}
+                />
+                <label htmlFor="Candidat">Candidat</label>
+              </div>
+              <div className="control">
+                <input
+                  type="radio"
+                  id="Entreprise"
+                  name="typeUtilisateur"
+                  value="Entreprise"
+                  checked={typeUtilisateur === "Entreprise"}
+                  onChange={(e) => setTypeUtilisateur(e.target.value)}
+                />
+                <label htmlFor="Entreprise">Entreprise</label>
+              </div>
+            </div>
+            {typeUtilisateur === "Entreprise" && (
+              <div className="control-row">
+                <label htmlFor="NomEntreprise">Nom de l'Entreprise</label>
+                <input
+                  type="text"
+                  id="NomEntreprise"
+                  name="NomEntreprise"
+                  required
+                />
+              </div>
+            )}
+            <div className="form-actions">
+              <button type="submit" className="button login__submit">
+                Inscrire
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-
-      <hr />
-
-      <div className="control-row">
-        <div className="control">
-          <label htmlFor="first-name">First Name</label>
-          <input type="text" id="first-name" name="first-name" />
-        </div>
-
-        <div className="control">
-          <label htmlFor="last-name">Last Name</label>
-          <input type="text" id="last-name" name="last-name" />
-        </div>
-      </div>
-
-      <div className="control">
-        <label htmlFor="terms-and-conditions">
-          <input type="checkbox" id="terms-and-conditions" name="terms" />I
-          agree to the terms and conditions
-        </label>
-      </div>
-
-      <p className="form-actions">
-        <Link to="/auth">
-          <button className="button button-flat">Login</button>
-        </Link>
-        <button type="submit" className="button">
-          Sign up
-        </button>
-      </p>
-    </form>
+    </div>
   );
 }

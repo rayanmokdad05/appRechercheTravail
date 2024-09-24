@@ -1,66 +1,62 @@
-import { useState, useContext } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import { Link } from "react-router-dom";
-import { AuthContext } from "../../Context/auth-context";
+import { USERS } from "../../data/utilisateurs";
 
-export default function Login() {
-  const auth = useContext(AuthContext);
-  const [entredValues, setEntredValues] = useState({
-    email: "",
-    password: "",
-  });
+export default function Connexion({ onLogin }) {
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [enteredPassword, setEnteredPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const navigate = useNavigate();
 
-  const handleInputChange = (identifier, value) => {
-    setEntredValues((prevValue) => ({
-      ...prevValue,
-      [identifier]: value, // on ajout [] pour acceder a la valeur de la propriete stored in a variable (js syntaxe)
-    }));
-  };
   const authSubmitHandler = (event) => {
     event.preventDefault();
-    console.log(entredValues);
-    setEntredValues({
-      email: "",
-      password: "",
-    });
-    auth.login();
+    if (!enteredEmail.includes("@")) {
+      setEmailError("Le courriel doit contenir '@'");
+      return;
+    }
+    setEmailError("");
+
+    const user = USERS.find(
+      (user) =>
+        user.email === enteredEmail && user.mot_de_passe === enteredPassword
+    );
+
+    if (user) {
+      onLogin(user);
+      navigate("/offres");
+    } else {
+      alert("Email ou mot de passe incorrect");
+    }
   };
+
   return (
-    <form onSubmit={authSubmitHandler}>
-      <h2>Login</h2>
-
-      <div className="control-row">
-        <div className="control no-margin">
-          <label htmlFor="email">Email</label>
+    <div className="container">
+      <form onSubmit={authSubmitHandler} className="login">
+        <h2>Connexion</h2>
+        <div className="control-row">
+          <label htmlFor="couriel">Courriel</label>
           <input
-            id="email"
-            type="email"
-            name="email"
-            onChange={(event) => handleInputChange("email", event.target.value)}
-            value={entredValues.email}
+            id="couriel"
+            type="text"
+            value={enteredEmail}
+            onChange={(e) => setEnteredEmail(e.target.value)}
+            required
           />
+          {emailError && <p className="error-message">{emailError}</p>}
         </div>
-
-        <div className="control no-margin">
-          <label htmlFor="password">Password</label>
+        <div className="control-row">
+          <label htmlFor="MotDePasse">Mot de passe</label>
           <input
-            id="password"
+            id="MotDePasse"
             type="password"
-            name="password"
-            onChange={(event) =>
-              handleInputChange("password", event.target.value)
-            }
-            value={entredValues.password}
+            value={enteredPassword}
+            onChange={(e) => setEnteredPassword(e.target.value)}
+            required
           />
         </div>
-      </div>
-
-      <p className="form-actions">
-        <Link to="/subscribe">
-          <button className="button button-flat">Sign up</button>
-        </Link>
-        <button className="button">Login</button>
-      </p>
-    </form>
+        <button type="submit">Se connecter</button>
+      </form>
+    </div>
   );
 }

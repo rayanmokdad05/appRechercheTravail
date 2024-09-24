@@ -1,122 +1,109 @@
-form {
-  width: 90%;
-  max-width: 40rem;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: linear-gradient(180deg, #cfe640, rgb(245, 125, 12));
-  border-radius: 8px;
-  box-shadow: 0 0 16px 1px rgba(0, 0, 0, 0.5);
-}
-
-.control,
-fieldset {
-  margin-bottom: 1rem;
-}
-
-.control.no-margin {
-  margin-bottom: 0;
-  padding-right: 1rem;
-}
-
-.control label {
-  display: block;
-  font-size: 0.8rem;
-  margin-bottom: 0.2rem;
-  color: #2c3a34;
-  text-transform: uppercase;
-  font-weight: bold;
-}
-
-.control input {
-  display: block;
-  width: 100%;
-  max-width: 15rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #758a8a;
-  background-color: #869999;
-  color: #142020;
-}
-
-.control select {
-  display: block;
-  width: 100%;
-  max-width: 15rem;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #758a8a;
-  background-color: #869999;
-  color: #142020;
-}
-
-.control:has(input[type="checkbox"]) {
+.container {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  margin: auto;
+  margin-top: 100px;
+  background: #fff;
+  padding: 30px; /* Increased padding */
+  border-radius: 10px; /* Slightly larger border-radius */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Slightly more pronounced shadow */
+  max-width: 600px; /* Increased max-width */
+  width: 100%; /* Ensures it takes full width up to the max-width */
 }
 
-.control:has(input[type="checkbox"]) label {
-  margin: 0;
-}
-
-.control input[type="checkbox"] {
-  display: inline-block;
-  width: auto;
-  max-width: none;
-  margin-right: 0.5rem;
-  border-radius: 0;
-  border: none;
-  background-color: transparent;
-  color: #d9e2f1;
-}
-
-.control-error {
-  color: #ffca99;
-  font-size: 0.8rem;
-  height: 2rem;
-  padding: 0.5rem 0;
-}
-
-.control-error p {
-  margin: 0;
-}
-
-.control-row {
+.header {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* Increased gap */
+  width: 100%;
+  margin-bottom: 40px; /* Increased margin-bottom */
 }
 
-.form-actions {
+.text {
+  color: #3c009d;
+  font-size: 28px; /* Increased font size */
+  font-weight: 700;
+}
+
+.underline {
+  width: 80px; /* Increased width */
+  height: 8px; /* Increased height */
+  background: #3c009d;
+  border-radius: 12px; /* Slightly larger border-radius */
+}
+
+.inputs {
   display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 25px; /* Increased gap */
+  width: 100%;
 }
 
-.button {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border-radius: 4px;
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Increased gap */
+  background: #eaeaea;
+  border-radius: 8px; /* Increased border-radius */
+  padding: 15px; /* Increased padding */
+}
+
+.input .text {
+  color: #3c009d;
+  font-size: 16px; /* Increased font size */
+  font-weight: 600;
+}
+
+.input input {
+  height: 50px; /* Increased height */
+  width: 100%;
+  background: transparent;
   border: none;
-  background-color: #147b73;
-  color: #d9e2f1;
+  outline: none;
+  color: #797979;
+  font-size: 18px; /* Increased font size */
+  padding: 0 15px; /* Increased padding inside input fields */
+}
+
+.forgot-password {
+  margin-top: 30px; /* Increased margin-top */
+  font-size: 16px; /* Increased font size */
+  color: #797979;
+}
+
+.forgot-password span {
+  color: #3c009d;
   cursor: pointer;
+  text-decoration: underline;
 }
 
-.button:hover,
-.button:focus {
-  background-color: #fab011;
+.submit-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 25px; /* Increased gap */
+  width: 100%;
+  margin-top: 40px; /* Increased margin-top */
 }
 
-.button-flat {
-  background-color: transparent;
-  color: #9cbaba;
+.submit {
+  background: #3c009d;
+  color: #fff;
+  padding: 15px 30px; /* Increased padding */
+  border-radius: 8px; /* Increased border-radius */
+  cursor: pointer;
+  text-align: center;
+  font-size: 18px; /* Increased font size */
+  font-weight: 600;
+  transition: background 0.3s ease;
+  flex: 1;
 }
 
-.button-flat:hover,
-.button-flat:focus {
-  background-color: transparent;
-  color: #fab011;
+.submit:first-of-type {
+  margin-right: 15px; /* Increased margin-right */
+}
+
+.submit:hover {
+  background: #2b0077;
 }

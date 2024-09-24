@@ -1,0 +1,72 @@
+.offres-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.offres-container h1 {
+  text-align: center;
+  color: #333;
+}
+
+.offres-container form {
+  margin-bottom: 20px;
+}
+
+.offres-container form div {
+  margin-bottom: 10px;
+}
+
+.offres-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.offres-container input[type="text"],
+.offres-container textarea {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.offres-container button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.offres-container button:hover {
+  background-color: #218838;
+}
+
+.offres-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.offres-container li {
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.offres-container h2 {
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.offres-container p {
+  margin: 0;
+  color: #666;
+}
