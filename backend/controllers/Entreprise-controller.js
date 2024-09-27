@@ -64,7 +64,7 @@ const UserInfo = async (req, res) => {
   }
 };
 
-// Mise à jour des infos utilisateur
+// Mise à jour des infos
 const UpdateUser = async (req, res, next) => {
   const { uid } = req.params;
   const { nom, email } = req.body;

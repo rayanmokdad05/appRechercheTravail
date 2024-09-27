@@ -61,7 +61,7 @@ export default function Offres({ offres, loggedInUser, setOffres }) {
     return null;
   }
 
-  console.log("Logged in user:", loggedInUser); // Debugging: Log loggedInUser
+  console.log("Logged in user:", loggedInUser); // Debuggg: Log loggedInUser
   console.log("User type:", loggedInUser.userType); // Debugging: Log userType
 
   return (
