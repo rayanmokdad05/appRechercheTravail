@@ -7,9 +7,8 @@ const UtilisateurRouter = require("./Routes/user-route");
 const EntrepriseRouter = require("./Routes/Entreprise-route");
 const Travail = require("./Routes/travail-route");
 
-// Initialiser serveury
+// Initialiser serveury ss
 const app = express();
-
 app.use(express.json());
 
 // Utiliser le middleware CORS
