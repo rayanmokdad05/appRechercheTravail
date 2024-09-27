@@ -61,6 +61,9 @@ export default function Offres({ offres, loggedInUser, setOffres }) {
     return null;
   }
 
+  console.log("Logged in user:", loggedInUser); // Debugging: Log loggedInUser
+  console.log("User type:", loggedInUser.userType); // Debugging: Log userType
+
   return (
     <div>
       <h1>Liste des Offres</h1>
@@ -69,8 +72,13 @@ export default function Offres({ offres, loggedInUser, setOffres }) {
           {offres.map((offre) => (
             <li key={offre._id}>
               <h2>{offre.title}</h2>
+              <p>Numéro: {offre.numero}</p>
               <p>{offre.description}</p>
-              <button onClick={() => handleDelete(offre._id)}>Supprimer</button>
+              {loggedInUser.userType === "Entreprise" && (
+                <button onClick={() => handleDelete(offre._id)}>
+                  Supprimer
+                </button>
+              )}
             </li>
           ))}
         </ul>
