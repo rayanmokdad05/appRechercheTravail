@@ -5,13 +5,20 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from "./Components/Login/Login";
+/*import Login from "./components/Login/Login";
 import Inscrire from "./Components/Signup/Signup";
 import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/Footer/Footer";
 import Profile from "./Components/Profile/Profile";
 import Offres from "./Components/Offres/Offre";
-import OffresEntreprise from "./Components/Offres/OffreEntreprise";
+import OffresEntreprise from "./Components/Offres/OffreEntreprise";*/
+import Login from "./components/login/Login";
+import Inscrire from "./components/signup/Signup";
+import Navbar from "./components/Navbar/Navbar";
+import Footer from "./components/Footer/Footer";
+import Profile from "./components/Profile/Profile";
+import Offres from "./components/Offres/Offre";
+import OffresEntreprise from "./components/Offres/OffreEntreprise";
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);
