@@ -1,121 +1,99 @@
-const Utilisateur = require("../models/user-model");
+const User = require("../models/user-model");
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
+// Fonction pour créer un token JWT
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "3d" });
 };
 
-// Connexion
-const ConnexionUti = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Effectue l'authentification
-    const user = await Utilisateur.Connexion(email, password);
-
-    // Génère un jeton JWT
-    const token = createToken(user._id);
-
-    res.status(200).json({ email, token, userId: user._id });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-const InscrireUti = async (req, res) => {
+// Inscription d'un utilisateur
+const signupUser = async (req, res) => {
   const { nom, email, password, type, nomEntreprise } = req.body;
 
   try {
-    // Register the user
-    const utilisateur = await Utilisateur.inscrire(nom, email, password, type, nomEntreprise);
+    // Utiliser la méthode statique inscrire du modèle User
+    const user = await User.inscrire(nom, email, password, type, nomEntreprise);
 
-    // Create a token
-    const token = createToken(utilisateur._id);
+    // Créer un token JWT
+    const token = createToken(user._id);
 
-    // Return the user data and token
-    res.status(200).json({ nom, email, type, nomEntreprise, token });
+    // Répondre avec l'email, le token et l'ID utilisateur
+    res.status(201).json({ email, token, userId: user._id });
   } catch (error) {
-    console.error(error); // Log the error
     res.status(400).json({ error: error.message });
   }
 };
 
-
-const UserInfo = async (req, res) => {
-  const { uid } = req.params;
+// Connexion d'un utilisateur
+const connexion = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    if (!ObjectId.isValid(uid)) {
-      // Validate uid before querying
+    const utilisateur = await User.Connexion(email, password);
+    const token = createToken(utilisateur._id);
+    res.status(200).json({ utilisateur, token });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+// Mise à jour des informations d'un utilisateur
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { nom, email, nomEntreprise } = req.body;
+
+  try {
+    if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid user ID format" });
     }
 
-    const userFound = await Utilisateur.findById(uid);
-    if (userFound) {
-      res.json(userFound);
-    } else {
-      res.status(404).json({ message: "Aucun utilisateur trouvé" });
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { nom, email, nomEntreprise },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ message: "Aucun utilisateur trouvé" });
     }
+
+    res
+      .status(200)
+      .json({
+        message: "Utilisateur mis à jour avec succès",
+        user: updatedUser,
+      });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };
 
-// pour mettre a jour les informations de l'utilisateur
-const UpdateUser = async (req, res, next) => {
-  const { uid } = req.params;
-  const { nom, email } = req.body;
+// Suppression d'un utilisateur
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
 
   try {
-    const updatedFields = {};
-    if (nom) updatedFields.nom = nom;
-    if (email) updatedFields.email = email;
-
-    if (!ObjectId.isValid(uid)) {
+    if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid user ID format" });
     }
 
-    const updatedUser = await Utilisateur.findByIdAndUpdate(
-      uid,
-      updatedFields,
-      { new: true }
-    );
-    res.status(200).json({
-      message: "Informations utilisateur mises à jour avec succès",
-      utilisateur: updatedUser,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erreur interne du serveur" });
-  }
-};
-
-// pour supprimer le compte de l'utilisateur
-const DeleteUser = async (req, res, next) => {
-  const { uid } = req.params;
-
-  try {
-    if (!ObjectId.isValid(uid)) {
-      return res.status(400).json({ error: "Invalid user ID " });
+    const deletedUser = await User.findByIdAndDelete(id);
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Aucun utilisateur trouvé" });
     }
 
-    await Utilisateur.findByIdAndDelete(uid);
-    res
-      .status(200)
-      .json({ message: "Compte utilisateur supprimé avec succès" });
+    res.status(200).json({ message: "Utilisateur supprimé avec succès" });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ error: "Erreur interne du serveur" });
   }
 };
 
 module.exports = {
-  ConnexionUti,
-  InscrireUti,
-  UserInfo,
-  UpdateUser,
-  DeleteUser,
+  signupUser,
+  connexion,
+  updateUser,
+  deleteUser,
 };

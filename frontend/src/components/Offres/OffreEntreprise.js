@@ -5,18 +5,35 @@ export default function OffresEntreprise({ setOffres }) {
   const [numero, setNumero] = useState("");
   const [description, setDescription] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newOffre = {
-      id: Date.now(), // Utiliser un ID unique
       numero,
       title,
       description,
     };
-    setOffres((prevOffres) => [...prevOffres, newOffre]); // Ajoute l'offre à la liste
-    setTitle("");
-    setNumero("");
-    setDescription("");
+
+    try {
+      const response = await fetch("/api/travail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newOffre),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create new offer");
+      }
+
+      const data = await response.json();
+      setOffres((prevOffres) => [...prevOffres, data]); // Add the new offer to the list
+      setTitle("");
+      setNumero("");
+      setDescription("");
+    } catch (error) {
+      console.error("Error creating new offer:", error.message);
+    }
   };
 
   return (
@@ -24,31 +41,32 @@ export default function OffresEntreprise({ setOffres }) {
       <h1>Créer une offre</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Titre:</label>
+          <label htmlFor="numero">Numéro</label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label>numero:</label>
-          <input type="text"
+            id="numero"
             value={numero}
             onChange={(e) => setNumero(e.target.value)}
-            required
-          />
-          </div>
-        <div>
-          <label>Description:</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
           />
         </div>
-        <button type="submit">Ajouter Offre</button>
+        <div>
+          <label htmlFor="title">Titre</label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="description">Description</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          ></textarea>
+        </div>
+        <button type="submit">Créer</button>
       </form>
     </div>
   );

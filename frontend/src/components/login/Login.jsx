@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
-import { USERS } from "../../data/utilisateurs";
 
 export default function Connexion({ onLogin }) {
   const [enteredEmail, setEnteredEmail] = useState("");
   const [enteredPassword, setEnteredPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
 
-  const authSubmitHandler = (event) => {
+  const authSubmitHandler = async (event) => {
     event.preventDefault();
     if (!enteredEmail.includes("@")) {
       setEmailError("Le courriel doit contenir '@'");
@@ -17,45 +17,58 @@ export default function Connexion({ onLogin }) {
     }
     setEmailError("");
 
-    const user = USERS.find(
-      (user) =>
-        user.email === enteredEmail && user.mot_de_passe === enteredPassword
-    );
+    try {
+      const response = await fetch("api/utilisateur/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: enteredEmail,
+          password: enteredPassword,
+        }),
+      });
 
-    if (user) {
-      onLogin(user);
-      navigate("/offres");
-    } else {
-      alert("Email ou mot de passe incorrect");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erreur lors de la connexion");
+      }
+
+      // Appeler la fonction onLogin avec les données de l'utilisateur
+      onLogin(data.utilisateur, data.token);
+
+      // Rediriger l'utilisateur vers une autre page après la connexion
+      navigate("/dashboard");
+    } catch (error) {
+      setLoginError(error.message);
     }
   };
 
   return (
-    <div className="container">
-      <form onSubmit={authSubmitHandler} className="login">
-        <h2>Connexion</h2>
-        <div className="control-row">
-          <label htmlFor="couriel">Courriel</label>
+    <div className="login-container">
+      <form onSubmit={authSubmitHandler}>
+        <div>
+          <label htmlFor="email">Email</label>
           <input
-            id="couriel"
-            type="text"
+            type="email"
+            id="email"
             value={enteredEmail}
             onChange={(e) => setEnteredEmail(e.target.value)}
-            required
           />
-          {emailError && <p className="error-message">{emailError}</p>}
+          {emailError && <p className="error">{emailError}</p>}
         </div>
-        <div className="control-row">
-          <label htmlFor="MotDePasse">Mot de passe</label>
+        <div>
+          <label htmlFor="password">Mot de passe</label>
           <input
-            id="MotDePasse"
             type="password"
+            id="password"
             value={enteredPassword}
             onChange={(e) => setEnteredPassword(e.target.value)}
-            required
           />
         </div>
-        <button type="submit">Se connecter</button>
+        {loginError && <p className="error">{loginError}</p>}
+        <button type="submit">Connexion</button>
       </form>
     </div>
   );

@@ -1,57 +1,45 @@
-const Travail = require("../models/Travail-model");
+const Travail = require("../models/travail-model");
 
-//get = obtenir les travails
-const getTravaux = async (req, res, next) => {
+// Récupérer toutes les offres de travail
+const getTravails = async (req, res) => {
   try {
-    const travaux = await Travail.find({});
-    const response = travaux.length
-      ? {
-          travaux: travaux.map((Travail) =>
-            Travail.toObject({ getters: true })
-          ),
-        }
-      : { message: "Pas de travaux." };
-    res.json(response);
-  } catch (err) {
-    res.status(500).json({
-      message: "ERREUR! Travail non retrouvé.",
-      error: err.message,
-    });
-  }
-};
-
-//post = créer un Travail
-const createTravail = async (req, res, next) => {
-  const { nom, des, genre } = req.body;
-  const createdTravail = new Travail({
-    nom,
-    des,
-    genre,
-  });
-  try {
-    await createdTravail.save();
+    const travails = await Travail.find();
+    res.status(200).json(travails);
   } catch (error) {
-    console.error(error); // Log the actual error
-    return next(new Error("Erreur! Travail non créé."));
+    res.status(500).json({ error: error.message });
   }
-  res.status(201).json({ Travail: createdTravail });
 };
 
-//Delete = suppression des travaux
-const deleteTravail = async (req, res, next) => {
-  const travailId = req.params.id;
+// Créer une nouvelle offre de travail
+const createTravail = async (req, res) => {
+  const { numero, title, description } = req.body;
+  console.log("Request body:", req.body); // Log request body for debugging
   try {
-    const Travail = await Travail.findByIdAndDelete(travailId);
-    if (!Travail) {
-      return next(new Error("Travail non trouvé."));
-    }
-    res.status(200).json({ message: "Travail supprimé" });
-  } catch (err) {
-    console.log(err);
-    return next(new Error("ERREUR! Travail non supprimé."));
+    const newTravail = new Travail({ numero, title, description });
+    await newTravail.save();
+    res.status(201).json(newTravail);
+  } catch (error) {
+    console.error("Error creating new offer:", error.message); // Log error for debugging
+    res.status(500).json({ error: error.message });
   }
 };
 
-exports.getTravaux = getTravaux;
-exports.createTravail = createTravail;
-exports.deleteTravail = deleteTravail;
+// Supprimer une offre de travail par ID
+const deleteTravail = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const travail = await Travail.findByIdAndDelete(id);
+    if (!travail) {
+      return res.status(404).json({ message: "Travail non trouvé" });
+    }
+    res.status(200).json({ message: "Travail supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  getTravails,
+  createTravail,
+  deleteTravail,
+};

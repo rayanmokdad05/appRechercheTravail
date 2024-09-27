@@ -1,35 +1,82 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Offres({ offres, loggedInUser, setOffres }) {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
+
+    const fetchOffres = async () => {
+      try {
+        const response = await fetch("/api/travail", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${loggedInUser.token}`, // Assuming you have a token for authentication
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch offres");
+        }
+
+        const data = await response.json();
+        console.log("Fetched data:", data); // Debugging: Log fetched data
+        setOffres(data);
+      } catch (error) {
+        console.error("Error fetching offres:", error.message); // Debugging: Log error
+      }
+    };
+
+    fetchOffres();
+  }, [loggedInUser, navigate, setOffres]);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/travail/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${loggedInUser.token}`, // Assuming you have a token for authentication
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete offre");
+      }
+
+      // Supprime l'offre avec l'ID correspondant de l'état local
+      setOffres(offres.filter((offre) => offre._id !== id));
+    } catch (error) {
+      console.error("Error deleting offre:", error.message); // Debugging: Log error
+    }
+  };
 
   if (!loggedInUser) {
     navigate("/login");
     return null;
   }
 
-  const handleDelete = (id) => {
-    // Supprime l'offre avec l'ID correspondant
-    setOffres(offres.filter((offre) => offre.id !== id));
-  };
-
   return (
     <div>
       <h1>Liste des Offres</h1>
-      <ul>
-        {offres.length > 0 ? (
-          offres.map((offre) => (
-            <li key={offre.id}>
+      {offres.length > 0 ? (
+        <ul>
+          {offres.map((offre) => (
+            <li key={offre._id}>
               <h2>{offre.title}</h2>
               <p>{offre.description}</p>
-              <button onClick={() => handleDelete(offre.id)}>Supprimer</button>
+              <button onClick={() => handleDelete(offre._id)}>Supprimer</button>
             </li>
-          ))
-        ) : (
-          <p>Aucune offre disponible.</p>
-        )}
-      </ul>
+          ))}
+        </ul>
+      ) : (
+        <p>Aucune offre disponible.</p>
+      )}
     </div>
   );
 }
