@@ -1,35 +1,54 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Signup.css";
-import { USERS } from "../../data/utilisateurs";
 
 export default function Inscrire() {
   const [prenom, setPrenom] = useState("");
   const [courriel, setCourriel] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [typeUtilisateur, setTypeUtilisateur] = useState("Candidat");
+  const [nomEntreprise, setNomEntreprise] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const authSubmitHandler = (event) => {
+  const authSubmitHandler = async (event) => {
     event.preventDefault();
     if (!courriel.includes("@")) {
       setEmailError("Le courriel doit contenir '@'");
       return;
     }
     setEmailError("");
+    setIsLoading(true);
 
     const newUser = {
-      id_utilisateur: USERS.length + 1,
       prenom: prenom,
       email: courriel,
       mot_de_passe: motDePasse,
       type: typeUtilisateur,
+      nomEntreprise: typeUtilisateur === "Entreprise" ? nomEntreprise : undefined,
     };
 
-    USERS.push(newUser);
-    alert("Compte créé avec succès !");
-    navigate("/login");
+    try {
+      const response = await fetch("http://localhost:3000/api/utilisateur/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error);
+      }
+      alert("Compte créé avec succès !");
+      navigate("/login");
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCourrielChange = (event) => {
@@ -41,6 +60,10 @@ export default function Inscrire() {
       setEmailError("");
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container">
@@ -114,10 +137,13 @@ export default function Inscrire() {
                   type="text"
                   id="NomEntreprise"
                   name="NomEntreprise"
+                  value={nomEntreprise}
+                  onChange={(e) => setNomEntreprise(e.target.value)}
                   required
                 />
               </div>
             )}
+            {error && <p className="error">{error}</p>}
             <div className="form-actions">
               <button type="submit" className="button login__submit">
                 Inscrire

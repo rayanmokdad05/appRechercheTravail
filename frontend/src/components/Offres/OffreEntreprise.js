@@ -2,17 +2,20 @@ import React, { useState } from "react";
 
 export default function OffresEntreprise({ setOffres }) {
   const [title, setTitle] = useState("");
+  const [numero, setNumero] = useState("");
   const [description, setDescription] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const newOffre = {
       id: Date.now(), // Utiliser un ID unique
+      numero,
       title,
       description,
     };
     setOffres((prevOffres) => [...prevOffres, newOffre]); // Ajoute l'offre à la liste
     setTitle("");
+    setNumero("");
     setDescription("");
   };
 
@@ -29,6 +32,14 @@ export default function OffresEntreprise({ setOffres }) {
             required
           />
         </div>
+        <div>
+          <label>numero:</label>
+          <input type="text"
+            value={numero}
+            onChange={(e) => setNumero(e.target.value)}
+            required
+          />
+          </div>
         <div>
           <label>Description:</label>
           <textarea

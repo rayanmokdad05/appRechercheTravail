@@ -1,12 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require('dotenv').config(); // Load environment variables from .env file
 
 const UtilisateurRouter = require("./Routes/user-route");
 const EntrepriseRouter = require("./Routes/Entreprise-route");
 const Travail = require("./Routes/travail-route");
 
-//initialiser serveur
+// Initialiser serveur
 const app = express();
 
 app.use(express.json());
@@ -14,26 +15,33 @@ app.use(express.json());
 // Utiliser le middleware CORS
 app.use(cors());
 
-const PORT = process.env.PORT || 3000;
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/RechercheTravailProjet";
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  console.log(req.body);
+  next();
+});
 
 app.use("/api/EntrepriseRouter", EntrepriseRouter);
 app.use("/api/utilisateur", UtilisateurRouter);
 app.use("/api/Travail", Travail);
 
-// établir une connexion à la BD
+
+if (!process.env.MONG_URI) {
+  console.error('MONGO_URI is not defined in the environment variables');
+  process.exit(1);
+}
+
 mongoose
-  .connect(MONGODB_URI)
+  .connect(process.env.MONG_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log("succès de la mise en place du serveur 5000");
-    app.listen(PORT, () => {
-      console.log("");
+    console.log('Connecté à la base de données MongoDB');
+    app.listen(process.env.PORT, () => {
+      console.log(`Serveur est connecté au port ${process.env.PORT}`);
     });
   })
   .catch((err) => {
-    console.error("échec de la connexion", err);
+    console.error('Erreur de connexion à MongoDB:', err);
   });
 
-//parser et ajouter une propriété body sur la request
+// Parser et ajouter une propriété body sur la request
 app.use(express.json());

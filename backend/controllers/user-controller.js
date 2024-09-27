@@ -29,8 +29,9 @@ const InscrireUti = async (req, res) => {
   const { nom, email, password } = req.body;
 
   try {
-    const utilisateur = await Utilisateur.inscrire(nom, email, password); // Passed 'nom' to the inscrire function
-
+    const utilisateur = await Utilisateur.inscrire(nom, email, password); 
+// Créer un token
+const token = createToken(user._id);
     res.status(200).json({ nom, email, utilisateur });
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -4,7 +4,7 @@ const control = require("../controllers/user-controller");
 
 //connection et inscription
 router.post("/Login", control.ConnexionUti);
-router.post("/SignUp", control.InscrireUti);
+router.post("/signup", control.InscrireUti);
 
 
 //page profile
