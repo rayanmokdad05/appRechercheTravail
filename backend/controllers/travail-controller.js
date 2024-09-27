@@ -1,4 +1,4 @@
-const Travail = require("../models/travail-model");
+const Travail = require("../models/Travail-model");
 
 // Récupérer toutes les offres de travail
 const getTravails = async (req, res) => {
