@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import "./Signup.css";
 
 export default function Inscrire() {
-  const [prenom, setPrenom] = useState("");
+  const [nom, setNom] = useState("");
   const [courriel, setCourriel] = useState("");
-  const [motDePasse, setMotDePasse] = useState("");
+  const [password, setPassword] = useState("");
   const [typeUtilisateur, setTypeUtilisateur] = useState("Candidat");
   const [nomEntreprise, setNomEntreprise] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -23,9 +23,9 @@ export default function Inscrire() {
     setIsLoading(true);
 
     const newUser = {
-      prenom: prenom,
       email: courriel,
-      mot_de_passe: motDePasse,
+      password: password,
+      nom: nom,
       type: typeUtilisateur,
       nomEntreprise: typeUtilisateur === "Entreprise" ? nomEntreprise : undefined,
     };
@@ -72,13 +72,13 @@ export default function Inscrire() {
           <form onSubmit={authSubmitHandler} className="login">
             <h2>Page d'inscription</h2>
             <div className="control-row">
-              <label htmlFor="Prenom">Prenom</label>
+              <label htmlFor="Nom">Nom</label>
               <input
                 type="text"
-                id="Prenom"
-                name="Prenom"
-                value={prenom}
-                onChange={(e) => setPrenom(e.target.value)}
+                id="Nom"
+                name="Nom"
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
                 required
               />
             </div>
@@ -95,13 +95,13 @@ export default function Inscrire() {
               {emailError && <p className="error">{emailError}</p>}
             </div>
             <div className="control-row">
-              <label htmlFor="MotDePasse">Mot de passe</label>
+              <label htmlFor="Password">Mot de passe</label>
               <input
-                id="MotDePasse"
+                id="Password"
                 type="password"
-                name="MotDePasse"
-                value={motDePasse}
-                onChange={(e) => setMotDePasse(e.target.value)}
+                name="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>

@@ -3,8 +3,8 @@ const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
-const createToken = (_id) => {
-  return jwt.sign({ _id }, "asdasdasd", { expiresIn: "3d" });
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d' });
 };
 
 // Connexion
@@ -24,19 +24,24 @@ const ConnexionUti = async (req, res) => {
   }
 };
 
-// Inscrire
 const InscrireUti = async (req, res) => {
-  const { nom, email, password } = req.body;
+  const { nom, email, password, type, nomEntreprise } = req.body;
 
   try {
-    const utilisateur = await Utilisateur.inscrire(nom, email, password); 
-// Créer un token
-const token = createToken(user._id);
-    res.status(200).json({ nom, email, utilisateur });
+    // Register the user
+    const utilisateur = await Utilisateur.inscrire(nom, email, password, type, nomEntreprise);
+
+    // Create a token
+    const token = createToken(utilisateur._id);
+
+    // Return the user data and token
+    res.status(200).json({ nom, email, type, nomEntreprise, token });
   } catch (error) {
+    console.error(error); // Log the error
     res.status(400).json({ error: error.message });
   }
 };
+
 
 const UserInfo = async (req, res) => {
   const { uid } = req.params;

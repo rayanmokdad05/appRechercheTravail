@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const Schema = mongoose.Schema;
 
-const usersSchema = new mongoose.Schema({
+const utilisateurSchema = new Schema({
   email: {
     type: String,
     required: [true],
@@ -18,32 +19,33 @@ const usersSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  type: {
+    type: String,
+    default: "Candidat",
+  },
+  nomEntreprise: {
+    type: String,
+    default: "",
+  },
 });
-usersSchema.statics.inscrire = async function (nom, email, password) {
-  if (!email || !password) {
-    throw Error("L'email et le mot de passe sont requis.");
-  }
 
-  const existant = await this.findOne({ email });
+// Static method to register a user
+utilisateurSchema.statics.inscrire = async function (nom, email, password, type, nomEntreprise) {
+  const exists = await this.findOne({ email });
 
-  if (existant) {
-    throw Error("Un compte avec cet email existe déjà.");
+  if (exists) {
+    throw Error('Email already in use');
   }
 
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
-  // Set nom to an empty string if it's not provided
-  const utilisateur = await this.create({
-    nom: nom || "",
-    email,
-    password: hash,
-  });
+  const utilisateur = await this.create({ nom, email, password: hash, type, nomEntreprise });
 
   return utilisateur;
 };
 
-usersSchema.statics.Connexion = async function (email, password) {
+utilisateurSchema.statics.Connexion = async function (email, password) {
   if (!email || !password) {
     throw Error("Les cases doivent etre remplit.");
   }
@@ -61,4 +63,5 @@ usersSchema.statics.Connexion = async function (email, password) {
   return utilisateur;
 };
 
-module.exports = mongoose.model("Users", usersSchema);
+module.exports = mongoose.model("Utilisateur", utilisateurSchema);
+
