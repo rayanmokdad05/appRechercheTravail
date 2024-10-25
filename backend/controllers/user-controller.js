@@ -58,12 +58,10 @@ const updateUser = async (req, res) => {
       return res.status(404).json({ message: "Aucun utilisateur trouvé" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Utilisateur mis à jour avec succès",
-        user: updatedUser,
-      });
+    res.status(200).json({
+      message: "Utilisateur mis à jour avec succès",
+      user: updatedUser,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Erreur interne du serveur" });
